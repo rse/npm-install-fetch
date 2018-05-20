@@ -106,11 +106,11 @@ const fetch      = require("./npm-install-fetch-api.js")
         let obj = require(file)
         if (obj.name === "npm-install-fetch")
             obj = {}
-        if (typeof obj.fetch === "object") {
-            if (obj.fetch instanceof Array)
-                requests = requests.concat(obj.fetch)
+        if (typeof obj["npm-install-fetch"] === "object") {
+            if (obj["npm-install-fetch"] instanceof Array)
+                requests = requests.concat(obj["npm-install-fetch"])
             else
-                requests.push(obj.fetch)
+                requests.push(obj["npm-install-fetch"])
         }
     }
 
