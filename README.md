@@ -14,12 +14,12 @@ About
 -----
 
 This [Node.js](https://nodejs.org) module provides an API and CLI for
-fetching external resources during the `install` step of the Node
-Package Manager (NPM). It is intended to let large NPM modules have a
-small NPM module distribution size, as the NPM registry dislikes too
-large (more than a few MB) distribution tarballs (mainly because it
-keeps all versions of an NPM module and this way it would get flooded
-with a massive amount of data).
+automatically fetching external resources during the `install` step
+of the Node Package Manager (NPM). It is primarily intended to let
+large NPM modules have a small NPM module distribution size, as the NPM
+registry dislikes too large (more than a few MB) distribution tarballs
+(mainly because it keeps all versions of an NPM module and this way it
+would get flooded with a massive amount of data).
 
 Installation
 ------------
