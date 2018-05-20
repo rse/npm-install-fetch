@@ -125,6 +125,10 @@ const fetch      = require("./npm-install-fetch-api.js")
         }
     }
 
+    /*  sanity check situation  */
+    if (requests.length === 0)
+        throw new Error("no resources given")
+
     /*  pass-through execution to API  */
     await fetch(requests)
 })().catch((err) => {
