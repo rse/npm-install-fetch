@@ -39,17 +39,12 @@ There are three distinct ways of using it:
 
         ```json
         {
-            ...
             "dependencies": {
                 "npm-install-fetch": "latest"
-                ...
-            }
-            ...
+            },
             "scripts": {
                 "install": "npm-install-fetch -n \"Example 1.2.3\" -o example.tgz https://github.com/example/example/archive/1.2.3.tar.gz"
-                ...
             }
-            ...
         }
         ```
 
@@ -59,17 +54,13 @@ There are three distinct ways of using it:
 
         ```json
         {
-            ...
             "dependencies": {
                 "npm-install-fetch": "latest"
-                ...
-            }
-            ...
+            },
             "scripts": {
                 "install": "npm-install-fetch"
                 ...
-            }
-            ...
+            },
             "npm-install-fetch": {
                 "name":    "Example 1.2.3",
                 "input":   "https://github.com/example/example/archive/1.2.3.tar.gz",
@@ -84,17 +75,12 @@ There are three distinct ways of using it:
 
         ```json
         {
-            ...
             "dependencies": {
                 "npm-install-fetch": "latest"
-                ...
-            }
-            ...
+            },
             "scripts": {
                 "install": "npm-install-fetch"
-                ...
             }
-            ...
         }
         ```
 
@@ -112,17 +98,12 @@ There are three distinct ways of using it:
 
         ```json
         {
-            ...
             "dependencies": {
                 "npm-install-fetch": "latest"
-                ...
-            }
-            ...
+            },
             "scripts": {
                 "install": "node npm-install.js"
-                ...
             }
-            ...
         }
         ```
 
