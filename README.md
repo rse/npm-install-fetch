@@ -59,7 +59,6 @@ There are three distinct ways of using it:
             },
             "scripts": {
                 "install": "npm-install-fetch"
-                ...
             },
             "npm-install-fetch": {
                 "name":    "Example 1.2.3",
