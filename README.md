@@ -55,9 +55,9 @@ There are three distinct ways of using it:
         - `-c <file>`, `--config <file>`: path to YAML configuration file (default: `"npm-install-fetch.yaml"`)
         - `-n <name>`, `--name <name>`: name of resource (default: `""`)
         - `-e`, `--extract`: extract archive to individual files
+        - `-s <number>`, `--strip <number>`: strip top-level directories from extracted files (default: `0`)
         - `-f <filter>`, `--filter <filter>`: filter extracted files(s) (default: none)
         - `-m <map-from>:<map-to>`, `--map <map-from>:<map-to>`: map extracted file paths (default: none)
-        - `-s <number>`, `--strip <number>`: strip top-level directories from extracted files (default: `0`)
         - `-o <file>`, `--output <file>`: output directory or file (default: `"."`)
 
 2. Command-Line Interface (CLI) with NPM Package Configuration Entry:<br/>
@@ -107,9 +107,9 @@ There are three distinct ways of using it:
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
         - `extract?: boolean`: extract archive to individual files (default: `false`)
+        - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `filter?: (string|[string+]|function)`: filter extracted files(s) (default: none)
         - `map?: ([string,string]|[[string,string]+]|function)`: map extracted file paths (default: none)
-        - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `output?: string`: output directory or file (default: `"."`)
 
 3. Command-Line Interface (CLI) with YAML Configuration File:<br/>
@@ -152,9 +152,9 @@ There are three distinct ways of using it:
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
         - `extract?: boolean`: extract archive to individual files (default: `false`)
+        - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `filter?: (string|[string+]|function)`: filter extracted files(s) (default: none)
         - `map?: ([string,string]|[[string,string]+]|function)`: map extracted file paths (default: none)
-        - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `output?: string`: output directory or file (default: `"."`)
 
 4. Application Programming Interface (API):<br/>
@@ -205,10 +205,20 @@ There are three distinct ways of using it:
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
         - `extract?: boolean`: extract archive to individual files (default: `false`)
+        - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `filter?: (string|[string+]|function)`: filter extracted files(s) (default: none)
         - `map?: ([string,string]|[[string,string]+]|function)`: map extracted file paths (default: none)
-        - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `output?: string`: output directory or file (default: `"."`)
+
+Notice
+------
+
+Options `strip`, `filter` and `map` require option `extract` to
+be meaningful. The options are executed in the order `strip`
+first, `filter` second and `map` third by the underlying
+[decompress](http://npmjs.com/decompress) module. Keep this order in
+mind, as `filter` sees only already stripped paths and `map` sees only
+already filtered paths.
 
 License
 -------
