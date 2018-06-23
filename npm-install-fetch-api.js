@@ -135,7 +135,7 @@ const fetch = async (requests) => {
                 if (!error && response.statusCode === 200) {
                     if (process.stdout.isTTY)
                         display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                            `${chalk.blue(filesize(body.length))} bytes received.            \n`)
+                            `${chalk.blue(filesize(body.length))} bytes received.                       \n`)
                     else
                         display(`${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
                             `${chalk.blue(filesize(body.length))} bytes received.\n`)
@@ -146,22 +146,33 @@ const fetch = async (requests) => {
             })
             let len = 0
             let lenMax = -1
+            let begin = Date.now()
             req.on("response", (response) => {
                 if (response.statusCode === 200 && response.headers["content-length"] !== "") {
-                    lenMax = parseInt(response.headers["content-length"])
-                    if (!(lenMax >= 0))
-                        reject(new Error(`download failed: invalid Content-Length`))
+                    let n = 0
+                    try { n = parseInt(response.headers["content-length"]) }
+                    catch (ex) { /* ignore */ }
+                    if (n >= 0)
+                        lenMax = n
                 }
             })
             req.on("data", (data) => {
                 len += data.length
                 if (process.stdout.isTTY) {
-                    if (lenMax !== -1)
-                        display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                            `${chalk.blue(filesize(len))} bytes (${chalk.blue(((len / lenMax) * 100).toFixed(0) + "%")}) received... `)
+                    let percent = ""
+                    if (lenMax > 0)
+                        percent = `(${chalk.blue(((len / lenMax) * 100).toFixed(0) + "%")}) `
+                    let speed = (len / ((Date.now() - begin) / 1000))
+                    if (speed > 1000 * 1000 * 1000)
+                        speed = (speed / (1000 * 1000 * 1000)).toFixed(1) + "GB/s"
+                    else if (speed > 1000 * 1000)
+                        speed = (speed / (1000 * 1000)).toFixed(1) + "MB/s"
+                    else if (speed > 1000)
+                        speed = (speed / 1000).toFixed(1) + "KB/s"
                     else
-                        display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                            `${chalk.blue(filesize(len))} bytes received... `)
+                        speed = speed.toFixed(0) + "B/s"
+                    display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
+                        `${chalk.blue(filesize(len))} bytes ${percent}received with ${chalk.blue(speed)}...     \b\b\b\b`)
                 }
             })
         })
