@@ -175,6 +175,9 @@ const fetch = async (requests) => {
                         `${chalk.blue(filesize(len))} bytes ${percent}received with ${chalk.blue(speed)}...     \b\b\b\b`)
                 }
             })
+            req.on("error", (error) => {
+                reject(new Error(`download failed (stream error): ${error}`))
+            })
         })
 
         /*  generate output  */
