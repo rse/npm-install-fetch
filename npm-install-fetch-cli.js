@@ -42,7 +42,7 @@ const fetch      = require("./npm-install-fetch-api.js")
     /*  command-line option parsing  */
     let argv = yargs
         /* eslint indent: off */
-        .usage("Usage: $0 [-h] [-V] [-c <file>] [-n <name>] [-e] [-f <filter>] [-m <map-from>:<map-to>] [-s] [-o <output>] [<input>]")
+        .usage("Usage: $0 [-h] [-V] [-c <file>] [-n <name>] [-e] [-f <filter>] [-m <map-from>:<map-to>] [-s <number>] [-o <file>] [<input>]")
         .help("h").alias("h", "help").default("h", false)
             .describe("h", "show usage help")
         .boolean("V").alias("V", "version").default("V", false)
@@ -57,7 +57,7 @@ const fetch      = require("./npm-install-fetch-api.js")
             .describe("f", "filter file(s)")
         .string("m").alias("m", "map")
             .describe("m", "map file paths")
-        .boolean("s").alias("s", "strip")
+        .number("s").alias("s", "strip").default("n", 0)
             .describe("s", "strip N top-level directories from archive paths")
         .string("o").alias("o", "output")
             .describe("o", "output directory or file")
