@@ -135,7 +135,7 @@ const fetch = async (requests) => {
                 if (!error && response.statusCode === 200) {
                     if (process.stdout.isTTY)
                         display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                            `${chalk.blue(filesize(body.length))} bytes received.     \n`)
+                            `${chalk.blue(filesize(body.length))} bytes received.            \n`)
                     else
                         display(`${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
                             `${chalk.blue(filesize(body.length))} bytes received.\n`)
@@ -145,11 +145,24 @@ const fetch = async (requests) => {
                     reject(new Error(`download failed: ${error}`))
             })
             let len = 0
+            let lenMax = -1
+            req.on("response", (response) => {
+                if (response.statusCode === 200 && response.headers["content-length"] !== "") {
+                    lenMax = parseInt(response.headers["content-length"])
+                    if (!(lenMax >= 0))
+                        reject(new Error(`download failed: invalid Content-Length`))
+                }
+            })
             req.on("data", (data) => {
                 len += data.length
-                if (process.stdout.isTTY)
-                    display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                        `${chalk.blue(filesize(len))} bytes received... `)
+                if (process.stdout.isTTY) {
+                    if (lenMax !== -1)
+                        display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
+                            `${chalk.blue(filesize(len))} bytes (${chalk.blue(((len / lenMax) * 100).toFixed(0) + "%")}) received... `)
+                    else
+                        display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
+                            `${chalk.blue(filesize(len))} bytes received... `)
+                }
             })
         })
 
