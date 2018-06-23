@@ -1,0 +1,8 @@
+{
+    "dependencies": {
+        "npm-install-fetch": ".."
+    },
+    "scripts": {
+        "install": "npm-install-fetch -n \"Example\" -o example.tgz https://github.com/rse/npm-install-fetch/archive/0.9.5.tar.gz"
+    }
+}
