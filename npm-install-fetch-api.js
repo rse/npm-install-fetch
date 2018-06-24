@@ -135,7 +135,7 @@ const fetch = async (requests) => {
                 if (!error && response.statusCode === 200) {
                     if (process.stdout.isTTY)
                         display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                            `${chalk.blue(filesize(body.length))} bytes received.                       \n`)
+                            `${chalk.blue(filesize(body.length))} bytes received.                        \n`)
                     else
                         display(`${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
                             `${chalk.blue(filesize(body.length))} bytes received.\n`)
