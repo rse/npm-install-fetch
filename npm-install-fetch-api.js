@@ -141,8 +141,12 @@ const fetch = async (requests) => {
                             `${chalk.blue(filesize(body.length))} bytes received.\n`)
                     resolve(body)
                 }
+                else if (error)
+                    reject(new Error(`download failed: ERROR: ${error}`))
+                else if (response.statusCode !== 200)
+                    reject(new Error(`download failed: HTTP response: ${response.statusCode}`))
                 else
-                    reject(new Error(`download failed: ${error}`))
+                    reject(new Error("download failed: unknown reason"))
             })
             let len = 0
             let lenMax = -1
