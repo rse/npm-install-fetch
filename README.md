@@ -210,6 +210,68 @@ There are three distinct ways of using it:
         - `map?: ([string,string]|[[string,string]+]|function)`: map extracted file paths (default: none)
         - `output?: string`: output directory or file (default: `"."`)
 
+Example 1: Large External Data
+------------------------------
+
+The module `fasttext-lid` depends on a large 128MB model, available
+from Facebook. The `package.json` of module `fasttext-lid` is:
+
+```json
+{
+    "name":        "fasttext-lid",
+    [...]
+    "dependencies": {
+        "npm-install-fetch":       "0.9.8",
+        [...]
+    },
+    "scripts": {
+        "install":        "npm-install-fetch"
+        [...]
+    },
+    "npm-install-fetch": {
+        "name":    "FastText LID-176 model",
+        "input":   "https://s3-us-west-1.amazonaws.com/fasttext-vectors/supervised_models/lid.176.bin",
+        "output":  "fasttext-lid-model.bin"
+    }
+}
+```
+
+Example 2: Large Internal Data
+------------------------------
+
+The module `typopro-web` has large generated fonts in its source-tree under `web/`.
+The `.npmignore` (for `npm publish`) and `package.json` (for `npm install`) files
+of module `typopro-web` are:
+
+```
+.git
+node_modules
+web
+```
+
+```json
+{
+    "name":        "typopro-web",
+    [...]
+    "dependencies": {
+        "npm-install-fetch":  "1.0.0",
+        "shx":                "0.3.0"
+    },
+    "scripts": {
+        "install":            "npm-install-fetch",
+        "uninstall":          "shx rm -rf web"
+    },
+    "npm-install-fetch": {
+        "name":    "TypoPRO: Fonts for Professional Typography (WEB) 4.0.0",
+        "input":   "https://github.com/rse/typopro-web/archive/4.0.0.tar.gz",
+        "extract": true,
+        "strip":   1,
+        "filter":  [ "web/*" ],
+        "output":  "."
+    }
+}
+```
+
 Notice
 ------
 
