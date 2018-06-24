@@ -216,7 +216,7 @@ Example 1: Large External Data
 The module `fasttext-lid` depends on a large 128MB model, available
 from Facebook. The `package.json` of module `fasttext-lid` is:
 
-```json
+```
 {
     "name":        "fasttext-lid",
     [...]
@@ -249,7 +249,7 @@ node_modules
 web
 ```
 
-```json
+```
 {
     "name":        "typopro-web",
     [...]
