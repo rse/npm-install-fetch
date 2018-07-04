@@ -31,6 +31,7 @@ const path       = require("path")
 const yargs      = require("yargs")
 const chalk      = require("chalk")
 const yaml       = require("js-yaml")
+const traverse   = require("traverse")
 
 /*  local requirements  */
 const fetch      = require("./npm-install-fetch-api.js")
@@ -102,15 +103,16 @@ const fetch      = require("./npm-install-fetch-api.js")
 
     /*  load package.json entry  */
     let file = path.resolve(process.cwd(), "package.json")
+    let pkg = {}
     if (fs.existsSync(file)) {
-        let obj = require(file)
-        if (obj.name === "npm-install-fetch")
-            obj = {}
-        if (typeof obj["npm-install-fetch"] === "object") {
-            if (obj["npm-install-fetch"] instanceof Array)
-                requests = requests.concat(obj["npm-install-fetch"])
+        pkg = require(file)
+        if (pkg.name === "npm-install-fetch")
+            pkg = {}
+        if (typeof pkg["npm-install-fetch"] === "object") {
+            if (pkg["npm-install-fetch"] instanceof Array)
+                requests = requests.concat(pkg["npm-install-fetch"])
             else
-                requests.push(obj["npm-install-fetch"])
+                requests.push(pkg["npm-install-fetch"])
         }
     }
 
@@ -128,6 +130,20 @@ const fetch      = require("./npm-install-fetch-api.js")
     /*  sanity check situation  */
     if (requests.length === 0)
         throw new Error("no resources given")
+
+    /*  expand variables from "package.json"  */
+    requests = traverse(requests).map(function (val) {
+        if (typeof val === "string") {
+            let valNew = val.replace(/%\{(.+?)\}/g, (m, name) => {
+                let result = m
+                if (typeof pkg[name] === "string")
+                    result = pkg[name]
+                return result
+            })
+            if (valNew !== val)
+                this.update(valNew)
+        }
+    })
 
     /*  pass-through execution to API  */
     await fetch(requests)
