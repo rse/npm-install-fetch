@@ -41,7 +41,7 @@ const fetch      = require("./npm-install-fetch-api.js")
     const my = require("./package.json")
 
     /*  command-line option parsing  */
-    let argv = yargs
+    const argv = yargs
         /* eslint indent: off */
         .usage("Usage: $0 [-h] [-V] [-c <file>] [-n <name>] [-e] [-f <filter>] [-m <map-from>:<map-to>] [-s <number>] [-o <file>] [<input>]")
         .help("h").alias("h", "help").default("h", false)
@@ -82,7 +82,7 @@ const fetch      = require("./npm-install-fetch-api.js")
 
     /*  take over CLI options  */
     if (argv._.length === 1) {
-        let options = {}
+        const options = {}
         if (argv._.length === 1) options.input   = argv._[0]
         if (argv.name)           options.name    = argv.name
         if (argv.extract)        options.extract = argv.extract
@@ -118,7 +118,7 @@ const fetch      = require("./npm-install-fetch-api.js")
 
     file = path.resolve(process.cwd(), argv.config)
     if (fs.existsSync(file)) {
-        let obj = yaml.safeLoad(fs.readFileSync(file, { encoding: "utf8" }))
+        const obj = yaml.safeLoad(fs.readFileSync(file, { encoding: "utf8" }))
         if (typeof obj === "object") {
             if (obj instanceof Array)
                 requests = requests.concat(obj)
@@ -134,7 +134,7 @@ const fetch      = require("./npm-install-fetch-api.js")
     /*  expand variables from "package.json"  */
     requests = traverse(requests).map(function (val) {
         if (typeof val === "string") {
-            let valNew = val.replace(/%\{(.+?)\}/g, (m, name) => {
+            const valNew = val.replace(/%\{(.+?)\}/g, (m, name) => {
                 let result = m
                 if (typeof pkg[name] === "string")
                     result = pkg[name]

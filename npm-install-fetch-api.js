@@ -51,7 +51,7 @@ const glyphicon = {
 /*  define the API function  */
 const fetch = async (requests) => {
     /*  sanity check options  */
-    let errors = []
+    const errors = []
     if (!ducky.validate(requests, `[ {
         name?:    string,
         input:    string,
@@ -64,7 +64,7 @@ const fetch = async (requests) => {
         throw new Error(`invalid requests parameter: ${errors.join(", ")}`)
 
     /*  determine standard HTTP fetching parameters  */
-    let httpOpts = {
+    const httpOpts = {
         method:   "GET",
         encoding: null,
         headers: {
@@ -75,9 +75,9 @@ const fetch = async (requests) => {
     /*  determine proxy-related HTTP fetching parameters  */
     let proxy = getProxy()
     if (proxy === null) {
-        let result = await npmExecute([ "config", "get", "proxy" ]).catch(() => null)
+        const result = await npmExecute([ "config", "get", "proxy" ]).catch(() => null)
         if (result !== null) {
-            let stdout = result.stdout.toString().replace(/\r?\n$/, "")
+            const stdout = result.stdout.toString().replace(/\r?\n$/, "")
             if (stdout.match(/^https?:\/\/.+/))
                 proxy = stdout
         }
@@ -117,7 +117,7 @@ const fetch = async (requests) => {
             throw new Error("option \"strip\" requires option \"extract\"")
 
         /*  download the resource  */
-        let httpOptsLocal = Object.assign({}, httpOpts, {
+        const httpOptsLocal = Object.assign({}, httpOpts, {
             url: request.input
         })
         if (request.name)
@@ -130,7 +130,7 @@ const fetch = async (requests) => {
                 .replace(/(\d+)(\d{3})(\d{3})$/, "$1.$2.$3")
                 .replace(/(\d+)(\d{3})$/, "$1.$2")
         }
-        let data = await new Promise((resolve, reject) => {
+        const data = await new Promise((resolve, reject) => {
             const req = requester(httpOptsLocal, (error, response, body) => {
                 if (!error && response.statusCode === 200) {
                     if (process.stdout.isTTY)
@@ -150,7 +150,7 @@ const fetch = async (requests) => {
             })
             let len = 0
             let lenMax = -1
-            let begin = Date.now()
+            const begin = Date.now()
             req.on("response", (response) => {
                 if (response.statusCode === 200 && response.headers["content-length"] !== "") {
                     let n = 0
@@ -185,11 +185,11 @@ const fetch = async (requests) => {
         })
 
         /*  generate output  */
-        let stat = await fs.stat(request.output).catch(() => null)
+        const stat = await fs.stat(request.output).catch(() => null)
         if (!request.extract) {
             /*  save single file  */
             if (stat !== null && stat.isDirectory()) {
-                let url = new URL(request.input)
+                const url = new URL(request.input)
                 request.output = path.join(request.output, path.basename(url.pathname))
             }
             else if (stat !== null && !stat.isFile())
@@ -210,11 +210,11 @@ const fetch = async (requests) => {
             if (typeof filter === "string")
                 filter = [ filter ]
             if (typeof filter !== "function") {
-                let patterns = filter
+                const patterns = filter
                 filter = (path) => {
                     let take = (patterns[0][0] === "!")
                     patterns.forEach((pattern) => {
-                        let negate = (pattern[0] === "!")
+                        const negate = (pattern[0] === "!")
                         if (negate)
                             pattern = pattern.substr(1)
                         if (minimatch(path, pattern))
@@ -229,7 +229,7 @@ const fetch = async (requests) => {
             if (typeof map === "object" && typeof map[0] === "string")
                 map = [ map ]
             if (typeof map !== "function") {
-                let mappings = map
+                const mappings = map
                 map = (path) => {
                     mappings.forEach((mapping) => {
                         path = path.replace(mapping[0], mapping[1])
@@ -237,7 +237,7 @@ const fetch = async (requests) => {
                     return path
                 }
             }
-            let files = await decompress(data, request.output, {
+            const files = await decompress(data, request.output, {
                 filter: (file) => { return filter(file.path) },
                 map:    (file) => { file.path = map(file.path); return file },
                 strip:  request.strip
