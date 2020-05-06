@@ -128,7 +128,7 @@ const fetch = async (requests) => {
         }
         const data = await new Promise((resolve, reject) => {
             const begin = Date.now()
-            const req = got(request.input, { ...httpOpts, responseType: "buffer" })
+            const req = got(request.input, Object.assign({}, httpOpts, { responseType: "buffer" }))
             req.on("downloadProgress", (progress) => {
                 if (process.stdout.isTTY) {
                     let percent = ""
