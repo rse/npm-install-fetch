@@ -36,7 +36,7 @@
         "npm-execute":             "0.9.7",
         "decompress":              "4.2.1",
         "strip-ansi":              "6.0.0",
-        "minimatch":               "3.0.4",
+        "micromatch":              "4.0.2",
         "js-yaml":                 "3.13.1",
         "traverse":                "0.6.6",
         "mz":                      "2.7.0"

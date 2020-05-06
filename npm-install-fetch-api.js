@@ -31,7 +31,7 @@ const ducky         = require("ducky")
 const sprintf       = require("sprintfjs")
 const got           = require("got")
 const decompress    = require("decompress")
-const minimatch     = require("minimatch")
+const micromatch    = require("micromatch")
 const getProxy      = require("get-proxy")
 const npmExecute    = require("npm-execute")
 const chalk         = require("chalk")
@@ -53,13 +53,15 @@ const fetch = async (requests) => {
     /*  sanity check options  */
     const errors = []
     if (!ducky.validate(requests, `[ {
-        name?:    string,
-        input:    string,
-        extract?: boolean,
-        filter?:  (string|[string+]|function),
-        map?:     ([string,string]|[[string,string]+]|function),
-        strip?:   number,
-        output?:  string
+        arch?:     string,
+        platform?: string,
+        name?:     string,
+        input:     string,
+        extract?:  boolean,
+        filter?:   (string|[string+]|function),
+        map?:      ([string,string]|[[string,string]+]|function),
+        strip?:    number,
+        output?:   string
     }+ ]`, errors))
         throw new Error(`invalid requests parameter: ${errors.join(", ")}`)
 
@@ -101,11 +103,21 @@ const fetch = async (requests) => {
 
         /*  fill options with defaults  */
         request = Object.assign({}, {
-            name:    "",
-            extract: false,
-            strip:   0,
-            output:  "."
+            arch:     "*",
+            platform: "*",
+            name:     "",
+            extract:  false,
+            strip:    0,
+            output:   "."
         }, request)
+
+        /*  filter on architecture  */
+        if (!micromatch.all(process.arch, request.arch.split(",")))
+            continue
+
+        /*  filter on platform  */
+        if (!micromatch.all(process.platform, request.platform.split(",")))
+            continue
 
         /*  sanity check usage  */
         if (request.filter && !request.extract)
@@ -196,7 +208,7 @@ const fetch = async (requests) => {
                         const negate = (pattern[0] === "!")
                         if (negate)
                             pattern = pattern.substr(1)
-                        if (minimatch(path, pattern))
+                        if (micromatch.isMatch(path, pattern))
                             take = !negate
                     })
                     return take

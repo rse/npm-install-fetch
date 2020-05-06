@@ -43,13 +43,17 @@ const fetch      = require("./npm-install-fetch-api.js")
     /*  command-line option parsing  */
     const argv = yargs
         /* eslint indent: off */
-        .usage("Usage: $0 [-h] [-V] [-c <file>] [-n <name>] [-e] [-f <filter>] [-m <map-from>:<map-to>] [-s <number>] [-o <file>] [<input>]")
+        .usage("Usage: $0 [-h] [-V] [-c <file>] [-a <arch>] [-p <platform>] [-n <name>] [-e] [-f <filter>] [-m <map-from>:<map-to>] [-s <number>] [-o <file>] [<input>]")
         .help("h").alias("h", "help").default("h", false)
             .describe("h", "show usage help")
         .boolean("V").alias("V", "version").default("V", false)
             .describe("V", "show program version information")
         .string("c").alias("c", "config").default("c", "npm-install-fetch.yaml")
             .describe("c", "path to YAML configuration file")
+        .string("a").alias("a", "arch").default("a", "*")
+            .describe("a", "ensure system architecture matches")
+        .string("p").alias("p", "platform").default("p", "*")
+            .describe("p", "ensure system platform matches")
         .string("n").alias("n", "name").default("n", "")
             .describe("n", "name of resource")
         .boolean("e").alias("e", "extract").default("e", false)
@@ -83,12 +87,14 @@ const fetch      = require("./npm-install-fetch-api.js")
     /*  take over CLI options  */
     if (argv._.length === 1) {
         const options = {}
-        if (argv._.length === 1) options.input   = argv._[0]
-        if (argv.name)           options.name    = argv.name
-        if (argv.extract)        options.extract = argv.extract
-        if (argv.filter)         options.filter  = argv.filter
-        if (argv.strip)          options.strip   = argv.strip
-        if (argv.output)         options.output  = argv.output
+        if (argv._.length === 1) options.input    = argv._[0]
+        if (argv.arch)           options.arch     = argv.arch
+        if (argv.platform)       options.platform = argv.platform
+        if (argv.name)           options.name     = argv.name
+        if (argv.extract)        options.extract  = argv.extract
+        if (argv.filter)         options.filter   = argv.filter
+        if (argv.strip)          options.strip    = argv.strip
+        if (argv.output)         options.output   = argv.output
         if (argv.map) {
             let list = argv.map
             if (typeof list === "string")

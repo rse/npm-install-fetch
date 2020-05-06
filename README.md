@@ -53,6 +53,8 @@ There are three distinct ways of using it:
         - `-h`, `--help`: show usage help
         - `-V`, `--version`: show program version information
         - `-c <file>`, `--config <file>`: path to YAML configuration file (default: `"npm-install-fetch.yaml"`)
+        - `-a <arch>`, `--arch <arch>`: ensure system architecture matches (default: `"*"`)
+        - `-p <platform>`, `--platform <platform>`: ensure system platform matches (default: `"*"`)
         - `-n <name>`, `--name <name>`: name of resource (default: `""`)
         - `-e`, `--extract`: extract archive to individual files
         - `-s <number>`, `--strip <number>`: strip top-level directories from extracted files (default: `0`)
@@ -104,6 +106,8 @@ There are three distinct ways of using it:
 
     - Supported Configuration Entries:
 
+        - `arch?: string`: ensure system architecture matches (default: `"*"`)
+        - `platform?: string`: ensure system platform matches (default: `"*"`)
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
         - `extract?: boolean`: extract archive to individual files (default: `false`)
@@ -149,6 +153,8 @@ There are three distinct ways of using it:
 
     - Supported Configuration Entries:
 
+        - `arch?: string`: ensure system architecture matches (default: `"*"`)
+        - `platform?: string`: ensure system platform matches (default: `"*"`)
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
         - `extract?: boolean`: extract archive to individual files (default: `false`)
