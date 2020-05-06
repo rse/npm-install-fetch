@@ -29,7 +29,7 @@ const fs            = require("mz/fs")
 /*  external requirements  */
 const ducky         = require("ducky")
 const sprintf       = require("sprintfjs")
-const requester     = require("request")
+const got           = require("got")
 const decompress    = require("decompress")
 const minimatch     = require("minimatch")
 const getProxy      = require("get-proxy")
@@ -66,7 +66,6 @@ const fetch = async (requests) => {
     /*  determine standard HTTP fetching parameters  */
     const httpOpts = {
         method:   "GET",
-        encoding: null,
         headers: {
             "User-Agent": `${my.name}/${my.version}`
         }
@@ -117,9 +116,6 @@ const fetch = async (requests) => {
             throw new Error("option \"strip\" requires option \"extract\"")
 
         /*  download the resource  */
-        const httpOptsLocal = Object.assign({}, httpOpts, {
-            url: request.input
-        })
         if (request.name)
             display(`${glyphicon.crown.unicode} ${chalk.reset("resource:")} ` +
                 `${chalk.blue.bold(request.name)}\n`)
@@ -131,42 +127,14 @@ const fetch = async (requests) => {
                 .replace(/(\d+)(\d{3})$/, "$1.$2")
         }
         const data = await new Promise((resolve, reject) => {
-            const req = requester(httpOptsLocal, (error, response, body) => {
-                if (!error && response.statusCode === 200) {
-                    if (process.stdout.isTTY)
-                        display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                            `${chalk.blue(filesize(body.length))} bytes received.                        \n`)
-                    else
-                        display(`${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                            `${chalk.blue(filesize(body.length))} bytes received.\n`)
-                    resolve(body)
-                }
-                else if (error)
-                    reject(new Error(`download failed: ERROR: ${error}`))
-                else if (response.statusCode !== 200)
-                    reject(new Error(`download failed: HTTP response: ${response.statusCode}`))
-                else
-                    reject(new Error("download failed: unknown reason"))
-            })
-            let len = 0
-            let lenMax = -1
             const begin = Date.now()
-            req.on("response", (response) => {
-                if (response.statusCode === 200 && response.headers["content-length"] !== "") {
-                    let n = 0
-                    try { n = parseInt(response.headers["content-length"]) }
-                    catch (ex) { /* ignore */ }
-                    if (n >= 0)
-                        lenMax = n
-                }
-            })
-            req.on("data", (data) => {
-                len += data.length
+            const req = got(request.input, { ...httpOpts, responseType: "buffer" })
+            req.on("downloadProgress", (progress) => {
                 if (process.stdout.isTTY) {
                     let percent = ""
-                    if (lenMax > 0)
-                        percent = `(${chalk.blue(((len / lenMax) * 100).toFixed(0) + "%")}) `
-                    let speed = (len / ((Date.now() - begin) / 1000))
+                    if (progress.total)
+                        percent = `(${chalk.blue(((progress.transferred / progress.total) * 100).toFixed(0) + "%")}) `
+                    let speed = (progress.transferred / ((Date.now() - begin) / 1000))
                     if (speed > 1000 * 1000 * 1000)
                         speed = (speed / (1000 * 1000 * 1000)).toFixed(1) + "GB/s"
                     else if (speed > 1000 * 1000)
@@ -176,11 +144,22 @@ const fetch = async (requests) => {
                     else
                         speed = speed.toFixed(0) + "B/s"
                     display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
-                        `${chalk.blue(filesize(len))} bytes ${percent}received with ${chalk.blue(speed)}...     \b\b\b\b`)
+                        `${chalk.blue(filesize(progress.transferred))} bytes ${percent}received ` +
+                        `with ${chalk.blue(speed)}...     \b\b\b\b`)
                 }
             })
-            req.on("error", (error) => {
-                reject(new Error(`download failed (stream error): ${error}`))
+            req.then((response) => {
+                if (process.stdout.isTTY)
+                    display(`\r${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
+                        `${chalk.blue(filesize(response.body.length))} bytes received.                        \n`)
+                else
+                    display(`${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
+                        `${chalk.blue(filesize(response.body.length))} bytes received.\n`)
+                resolve(response.body)
+            }).catch((err) => {
+                if (process.stdout.isTTY)
+                    display("\n")
+                reject(new Error(`download failed: ${err}`))
             })
         })
 
