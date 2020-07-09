@@ -30,7 +30,7 @@
         "yargs":                   "15.4.0",
         "chalk":                   "4.1.0",
         "sprintfjs":               "1.2.15",
-        "got":                     "11.5.0",
+        "got":                     "11.3.0",
         "rimraf":                  "3.0.2",
         "get-proxy":               "2.1.0",
         "npm-execute":             "0.9.8",
