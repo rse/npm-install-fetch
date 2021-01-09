@@ -138,6 +138,7 @@ const fetch      = require("./npm-install-fetch-api.js")
         throw new Error("no resources given")
 
     /*  expand variables from "package.json"  */
+    /* eslint array-callback-return: off */
     requests = traverse(requests).map(function (val) {
         if (typeof val === "string") {
             const valNew = val.replace(/%\{(.+?)\}/g, (m, name) => {
