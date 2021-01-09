@@ -55,11 +55,9 @@ const glyphicon = {
 /*  decompress plugin for single-file gz/bzip2 decompression  */
 const decompressGzipBzip2 = (pluginOpts = {}) => async (input, opts = {}) => {
     opts = { ...opts, ...pluginOpts }
-    console.log("OPTS", opts)
     if (!Buffer.isBuffer(input))
         return Promise.reject(new TypeError(`Expected a Buffer, got ${typeof input}`))
     const type = await fileType.fromBuffer(input)
-    console.log(type)
     if (!type || !type.ext.match(/^(?:gz|bz2)$/))
         return Promise.resolve([])
     return new Promise((resolve, reject) => {
