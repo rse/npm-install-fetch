@@ -238,7 +238,7 @@ const fetch = async (requests) => {
                 filename = path.basename(request.output)
                 const stat = await fs.stat(dirname).catch(() => null)
                 if (stat === null)
-                    await fs.mkdir(dirname, 0o755)
+                    await mkdirp(dirname, { mode: 0o755 })
             }
             if (request.decompress) {
                 await decompress(data, dirname, {
