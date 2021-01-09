@@ -124,7 +124,7 @@ const fetch      = require("./npm-install-fetch-api.js")
 
     file = path.resolve(process.cwd(), argv.config)
     if (fs.existsSync(file)) {
-        const obj = yaml.safeLoad(fs.readFileSync(file, { encoding: "utf8" }))
+        const obj = yaml.load(fs.readFileSync(file, { encoding: "utf8" }))
         if (typeof obj === "object") {
             if (obj instanceof Array)
                 requests = requests.concat(obj)
