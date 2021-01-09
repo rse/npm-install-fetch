@@ -56,6 +56,8 @@ const fetch      = require("./npm-install-fetch-api.js")
             .describe("p", "ensure system platform matches")
         .string("n").alias("n", "name").default("n", "")
             .describe("n", "name of resource")
+        .boolean("d").alias("d", "decompress").default("d", false)
+            .describe("d", "decompress resource")
         .boolean("e").alias("e", "extract").default("e", false)
             .describe("e", "extract archive to individual files")
         .string("f").nargs("f", 1).alias("f", "filter")
@@ -87,14 +89,15 @@ const fetch      = require("./npm-install-fetch-api.js")
     /*  take over CLI options  */
     if (argv._.length === 1) {
         const options = {}
-        if (argv._.length === 1) options.input    = argv._[0]
-        if (argv.arch)           options.arch     = argv.arch
-        if (argv.platform)       options.platform = argv.platform
-        if (argv.name)           options.name     = argv.name
-        if (argv.extract)        options.extract  = argv.extract
-        if (argv.filter)         options.filter   = argv.filter
-        if (argv.strip)          options.strip    = argv.strip
-        if (argv.output)         options.output   = argv.output
+        if (argv._.length === 1) options.input      = argv._[0]
+        if (argv.arch)           options.arch       = argv.arch
+        if (argv.platform)       options.platform   = argv.platform
+        if (argv.name)           options.name       = argv.name
+        if (argv.decompress)     options.decompress = argv.decompress
+        if (argv.extract)        options.extract    = argv.extract
+        if (argv.filter)         options.filter     = argv.filter
+        if (argv.strip)          options.strip      = argv.strip
+        if (argv.output)         options.output     = argv.output
         if (argv.map) {
             let list = argv.map
             if (typeof list === "string")

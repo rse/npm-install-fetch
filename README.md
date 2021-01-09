@@ -56,6 +56,7 @@ There are three distinct ways of using it:
         - `-a <arch>`, `--arch <arch>`: ensure system architecture matches (default: `"*"`)
         - `-p <platform>`, `--platform <platform>`: ensure system platform matches (default: `"*"`)
         - `-n <name>`, `--name <name>`: name of resource (default: `""`)
+        - `-d`, `--decompress`: decompress input
         - `-e`, `--extract`: extract archive to individual files
         - `-s <number>`, `--strip <number>`: strip top-level directories from extracted files (default: `0`)
         - `-f <filter>`, `--filter <filter>`: filter extracted files(s) (default: none)
@@ -110,6 +111,7 @@ There are three distinct ways of using it:
         - `platform?: string`: ensure system platform matches (default: `"*"`)
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
+        - `decompress?: boolean`: decompress resource (default: `false`)
         - `extract?: boolean`: extract archive to individual files (default: `false`)
         - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `filter?: (string|[string+]|function)`: filter extracted files(s) (default: none)
@@ -157,6 +159,7 @@ There are three distinct ways of using it:
         - `platform?: string`: ensure system platform matches (default: `"*"`)
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
+        - `decompress?: boolean`: decompress resource (default: `false`)
         - `extract?: boolean`: extract archive to individual files (default: `false`)
         - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `filter?: (string|[string+]|function)`: filter extracted files(s) (default: none)
@@ -212,6 +215,7 @@ There are three distinct ways of using it:
         - `platform?: string`: ensure system platform matches (default: `"*"`)
         - `name?: string`: name of resource (default: `""`)
         - `input: string`: URL of resource
+        - `decompress?: boolean`: decompress resource (default: `false`)
         - `extract?: boolean`: extract archive to individual files (default: `false`)
         - `strip?: number`: strip top-level directories from extracted files (default: `0`)
         - `filter?: (string|[string+]|function)`: filter extracted files(s) (default: none)

@@ -36,6 +36,10 @@ const getProxy      = require("get-proxy")
 const npmExecute    = require("npm-execute")
 const chalk         = require("chalk")
 const stripAnsi     = require("strip-ansi")
+const fileType      = require("file-type")
+const zlib          = require("zlib")
+const seekBzip      = require("seek-bzip")
+const mkdirp        = require("mkdirp")
 
 /*  load my own information  */
 const my = require("./package.json")
@@ -48,20 +52,59 @@ const glyphicon = {
     arrow: { unicode: "▶", ascii: ">" }
 }
 
+/*  decompress plugin for single-file gz/bzip2 decompression  */
+const decompressGzipBzip2 = (pluginOpts = {}) => async (input, opts = {}) => {
+    opts = { ...opts, ...pluginOpts }
+    console.log("OPTS", opts)
+    if (!Buffer.isBuffer(input))
+        return Promise.reject(new TypeError(`Expected a Buffer, got ${typeof input}`))
+    const type = await fileType.fromBuffer(input)
+    console.log(type)
+    if (!type || !type.ext.match(/^(?:gz|bz2)$/))
+        return Promise.resolve([])
+    return new Promise((resolve, reject) => {
+        const decompressResult = (data) => ([ {
+            data:  data,
+            type:  "file",
+            path:  opts.path,
+            mode:  0o644,
+            mtime: Date.now()
+        } ])
+        if (type.ext === "gz") {
+            zlib.gunzip(input, (err, data) => {
+                if (err)
+                    reject(err)
+                else
+                    resolve(decompressResult(data))
+            })
+        }
+        else if (type.ext === "bz2") {
+            try {
+                const data = seekBzip.decode(input)
+                resolve(decompressResult(data))
+            }
+            catch (err) {
+                reject(err)
+            }
+        }
+    })
+}
+
 /*  define the API function  */
 const fetch = async (requests) => {
     /*  sanity check options  */
     const errors = []
     if (!ducky.validate(requests, `[ {
-        arch?:     string,
-        platform?: string,
-        name?:     string,
-        input:     string,
-        extract?:  boolean,
-        filter?:   (string|[string+]|function),
-        map?:      ([string,string]|[[string,string]+]|function),
-        strip?:    number,
-        output?:   string
+        arch?:       string,
+        platform?:   string,
+        name?:       string,
+        input:       string,
+        decompress?: boolean,
+        extract?:    boolean,
+        filter?:     (string|[string+]|function),
+        map?:        ([string,string]|[[string,string]+]|function),
+        strip?:      number,
+        output?:     string
     }+ ]`, errors))
         throw new Error(`invalid requests parameter: ${errors.join(", ")}`)
 
@@ -103,12 +146,13 @@ const fetch = async (requests) => {
 
         /*  fill options with defaults  */
         request = Object.assign({}, {
-            arch:     "*",
-            platform: "*",
-            name:     "",
-            extract:  false,
-            strip:    0,
-            output:   "."
+            arch:       "*",
+            platform:   "*",
+            name:       "",
+            decompress: false,
+            extract:    false,
+            strip:      0,
+            output:     "."
         }, request)
 
         /*  filter on architecture  */
@@ -179,13 +223,30 @@ const fetch = async (requests) => {
         const stat = await fs.stat(request.output).catch(() => null)
         if (!request.extract) {
             /*  save single file  */
-            if (stat !== null && stat.isDirectory()) {
-                const url = new URL(request.input)
-                request.output = path.join(request.output, path.basename(url.pathname))
-            }
-            else if (stat !== null && !stat.isFile())
+            if (stat !== null && !stat.isDirectory() && !stat.isFile())
                 throw new Error(`output path ${request.output} exists, but is neither directory nor file`)
-            await fs.writeFile(request.output, data, { encoding: null })
+            let dirname
+            let filename
+            if (stat !== null && stat.isDirectory()) {
+                dirname = request.output
+                const url = new URL(request.input)
+                filename = path.basename(url.pathname)
+                request.output = path.join(dirname, filename)
+            }
+            else {
+                dirname  = path.dirname(request.output)
+                filename = path.basename(request.output)
+                const stat = await fs.stat(dirname).catch(() => null)
+                if (stat === null)
+                    await fs.mkdir(dirname, 0o755)
+            }
+            if (request.decompress) {
+                await decompress(data, dirname, {
+                    plugins: [ decompressGzipBzip2({ path: filename }) ]
+                })
+            }
+            else
+                await fs.writeFile(request.output, data, { encoding: null })
             display(`${glyphicon.arrow.unicode} ${chalk.reset("outcomes:")} ` +
                 `${chalk.blue(request.output)} (1 file)\n`)
         }
