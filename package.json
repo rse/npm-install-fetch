@@ -1,6 +1,6 @@
 {
     "name":                        "npm-install-fetch",
-    "version":                     "1.3.5",
+    "version":                     "1.3.6",
     "description":                 "Fetch Externalized Resources on NPM Package Installation",
     "keywords":                    [ "npm", "install", "fetch", "external", "resource" ],
     "main":                        "npm-install-fetch-api.js",
