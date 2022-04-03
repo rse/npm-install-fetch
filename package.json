@@ -17,15 +17,16 @@
     "license":  "MIT",
     "homepage": "https://github.com/rse/npm-install-fetch",
     "bugs":     "https://github.com/rse/npm-install-fetch/issues",
+    "upd":      [ "!execa", "!got", "!chalk", "!strip-ansi", "!file-type" ],
     "devDependencies": {
-        "eslint":                  "7.27.0",
-        "eslint-config-standard":  "16.0.3",
-        "eslint-plugin-import":    "2.25.3",
+        "eslint":                  "8.12.0",
+        "eslint-config-standard":  "17.0.0-1",
+        "eslint-plugin-import":    "2.25.4",
         "eslint-plugin-node":      "11.1.0"
     },
     "dependencies": {
         "ducky":                   "2.7.3",
-        "yargs":                   "17.2.1",
+        "yargs":                   "17.4.0",
         "chalk":                   "4.1.2",
         "sprintfjs":               "1.2.17",
         "got":                     "11.8.3",
@@ -37,13 +38,13 @@
         "file-type":               "16.5.3",
         "seek-bzip":               "2.0.0",
         "strip-ansi":              "6.0.0",
-        "micromatch":              "4.0.4",
+        "micromatch":              "4.0.5",
         "js-yaml":                 "4.1.0",
         "traverse":                "0.6.6",
         "mz":                      "2.7.0"
     },
     "engines": {
-        "node":                    ">=10.0.0"
+        "node":                    ">=12.0.0"
     },
     "scripts": {
         "prepublishOnly": "eslint --config eslint.yaml *.js"
