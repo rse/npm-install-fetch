@@ -62,7 +62,7 @@ const decompressGzipBzip2 = (pluginOpts = {}) => async (input, opts = {}) => {
         return Promise.resolve([])
     return new Promise((resolve, reject) => {
         const decompressResult = (data) => ([ {
-            data:  data,
+            data,
             type:  "file",
             path:  opts.path,
             mode:  0o644,
