@@ -35,7 +35,7 @@
         "get-proxy":               "2.1.0",
         "npm-execute":             "0.9.10",
         "decompress":              "4.2.1",
-        "file-type":               "16.5.3",
+        "file-type":               "16.5.4",
         "seek-bzip":               "2.0.0",
         "strip-ansi":              "6.0.0",
         "micromatch":              "4.0.5",
