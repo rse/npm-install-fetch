@@ -39,7 +39,7 @@ const stripAnsi     = require("strip-ansi")
 const fileType      = require("file-type")
 const zlib          = require("zlib")
 const seekBzip      = require("seek-bzip")
-const mkdirp        = require("mkdirp")
+const { mkdirp }    = require("mkdirp")
 
 /*  load my own information  */
 const my = require("./package.json")
