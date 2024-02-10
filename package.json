@@ -4,10 +4,10 @@
     "description":                 "Fetch Externalized Resources on NPM Package Installation",
     "keywords":                    [ "npm", "install", "fetch", "external", "resource" ],
     "main":                        "npm-install-fetch-api.js",
-    "bin":                         { "npm-install-fetch": "./npm-install-fetch-cli.js" },
+    "bin":                         { "npm-install-fetch": "npm-install-fetch-cli.js" },
     "repository": {
         "type":                    "git",
-        "url":                     "https://github.com/rse/npm-install-fetch.git"
+        "url":                     "git+https://github.com/rse/npm-install-fetch.git"
     },
     "author": {
         "name":                    "Dr. Ralf S. Engelschall",
