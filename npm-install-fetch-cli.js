@@ -42,7 +42,7 @@ const fetch      = require("./npm-install-fetch-api.js")
 
     /*  command-line option parsing  */
     const argv = yargs
-        /* eslint indent: off */
+        /* eslint @stylistic/indent: off */
         .usage("Usage: $0 [-h] [-V] [-c <file>] [-a <arch>] [-p <platform>] [-n <name>] [-e] [-f <filter>] [-m <map-from>:<map-to>] [-s <number>] [-o <file>] [<input>]")
         .help("h").alias("h", "help").default("h", false)
             .describe("h", "show usage help")
