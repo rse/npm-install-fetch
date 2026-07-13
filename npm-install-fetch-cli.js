@@ -41,7 +41,7 @@ const fetch      = require("./npm-install-fetch-api.js")
     const my = require("./package.json")
 
     /*  command-line option parsing  */
-    const argv = yargs
+    const argv = yargs()
         /* eslint @stylistic/indent: off */
         .usage("Usage: $0 [-h] [-V] [-c <file>] [-a <arch>] [-p <platform>] [-n <name>] [-e] [-f <filter>] [-m <map-from>:<map-to>] [-s <number>] [-o <file>] [<input>]")
         .help("h").alias("h", "help").default("h", false)
