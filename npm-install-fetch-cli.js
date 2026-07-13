@@ -24,17 +24,20 @@
 */
 
 /*  internal requirements  */
-const fs         = require("fs")
-const path       = require("path")
+import fs         from "node:fs"
+import path       from "node:path"
+import { createRequire } from "node:module"
 
 /*  external requirements  */
-const yargs      = require("yargs")
-const chalk      = require("chalk")
-const yaml       = require("js-yaml")
-const traverse   = require("traverse")
+import yargs      from "yargs"
+import chalk      from "chalk"
+import { load as yamlLoad } from "js-yaml"
+import traverse   from "traverse"
 
 /*  local requirements  */
-const fetch      = require("./npm-install-fetch-api.js")
+import fetch      from "./npm-install-fetch-api.js"
+
+const require = createRequire(import.meta.url)
 
 ;(async () => {
     /*  load my package information  */
@@ -127,7 +130,7 @@ const fetch      = require("./npm-install-fetch-api.js")
 
     file = path.resolve(process.cwd(), argv.config)
     if (fs.existsSync(file)) {
-        const obj = yaml.load(fs.readFileSync(file, { encoding: "utf8" }))
+        const obj = yamlLoad(fs.readFileSync(file, { encoding: "utf8" }))
         if (typeof obj === "object") {
             if (obj instanceof Array)
                 requests = requests.concat(obj)

@@ -23,25 +23,27 @@
 */
 
 /*  internal requirements  */
-const path          = require("path")
-const fs            = require("mz/fs")
+import path          from "node:path"
+import zlib          from "node:zlib"
+import { createRequire } from "node:module"
+import fs            from "mz/fs.js"
 
 /*  external requirements  */
-const ducky         = require("ducky")
-const sprintf       = require("sprintfjs")
-const got           = require("got")
-const decompress    = require("@xhmikosr/decompress").default
-const micromatch    = require("micromatch")
-const getProxy      = require("get-proxy")
-const npmExecute    = require("npm-execute")
-const chalk         = require("chalk")
-const stripAnsi     = require("strip-ansi")
-const fileType      = require("file-type")
-const zlib          = require("zlib")
-const seekBzip      = require("seek-bzip")
-const { mkdirp }    = require("mkdirp")
+import ducky         from "ducky"
+import sprintf       from "sprintfjs"
+import got           from "got"
+import decompress    from "@xhmikosr/decompress"
+import micromatch    from "micromatch"
+import getProxy      from "get-proxy"
+import npmExecute    from "npm-execute"
+import chalk         from "chalk"
+import stripAnsi     from "strip-ansi"
+import { fileTypeFromBuffer } from "file-type"
+import seekBzip      from "seek-bzip"
+import { mkdirp }    from "mkdirp"
 
 /*  load my own information  */
+const require = createRequire(import.meta.url)
 const my = require("./package.json")
 
 /*  some glyph icons  */
@@ -57,7 +59,7 @@ const decompressGzipBzip2 = (pluginOpts = {}) => async (input, opts = {}) => {
     opts = { ...opts, ...pluginOpts }
     if (!Buffer.isBuffer(input))
         return Promise.reject(new TypeError(`Expected a Buffer, got ${typeof input}`))
-    const type = await fileType.fromBuffer(input)
+    const type = await fileTypeFromBuffer(input)
     if (!type || !type.ext.match(/^(?:gz|bz2)$/))
         return Promise.resolve([])
     return new Promise((resolve, reject) => {
@@ -209,7 +211,7 @@ const fetch = async (requests) => {
                 else
                     display(`${glyphicon.gear.unicode} ${chalk.reset("download:")} ` +
                         `${chalk.blue(filesize(response.body.length))} bytes received.\n`)
-                resolve(response.body)
+                resolve(Buffer.from(response.body))
             }).catch((err) => {
                 if (process.stdout.isTTY)
                     display("\n")
@@ -300,5 +302,5 @@ const fetch = async (requests) => {
 }
 
 /*  export the API function  */
-module.exports = fetch
+export default fetch
 
